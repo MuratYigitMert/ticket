@@ -17,4 +17,7 @@ public interface ITicketService {
 
     @Transactional
     Ticket addTicket(TicketRequest request);
+
+    @Transactional
+    Ticket cancelTicket(int id);
 }

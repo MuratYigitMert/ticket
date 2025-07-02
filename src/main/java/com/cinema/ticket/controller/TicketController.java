@@ -25,12 +25,7 @@ public class TicketController {
         TicketResponse response = DtoConverter.toDto(ticket);
         return ResponseEntity.ok(response);
     }
-    @GetMapping
-    public ResponseEntity<Page<TicketResponse>> getTickets(Pageable pageable) {
-        Page<Ticket> tickets = ticketService.getTickets(pageable);
-        Page<TicketResponse> response = tickets.map(DtoConverter::toDto);
-        return ResponseEntity.ok(response);
-    }
+
     @GetMapping("/user/{id}")
     public ResponseEntity<Page<TicketResponse>> getTicketsByUserId(@PathVariable int id, Pageable pageable) {
         Page<Ticket> tickets = ticketService.getTicketsByUserId(id, pageable);
@@ -45,4 +40,11 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<TicketResponse> cancelTicket(@PathVariable int id) {
+        Ticket cancelledTicket = ticketService.cancelTicket(id);
+        TicketResponse response = DtoConverter.toDto(cancelledTicket);
+        return ResponseEntity.ok(response);
+    }
+
 }

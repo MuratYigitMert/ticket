@@ -5,6 +5,7 @@ import com.cinema.ticket.dto.TicketRequest;
 import com.cinema.ticket.entity.Film;
 import com.cinema.ticket.entity.Ticket;
 import com.cinema.ticket.entity.User;
+import com.cinema.ticket.exception.ResourceNotFoundException;
 import com.cinema.ticket.repository.CategoryRepo;
 import com.cinema.ticket.repository.FilmRepo;
 import com.cinema.ticket.repository.TicketRepo;
@@ -59,6 +60,18 @@ public class TicketServiceImpl implements ITicketService {
                 .atZone(ZoneId.systemDefault()).toLocalDateTime()); // if using Date in DTO; else adjust
         // status defaults to pending
 
+        return ticketRepo.save(ticket);
+    }
+
+    @Transactional
+    @Override
+    public Ticket cancelTicket(int id) {
+        Ticket ticket= ticketRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+        if ("cancelled".equalsIgnoreCase(ticket.getStatus())) {
+            throw new IllegalStateException("Ticket is already cancelled");
+        }
+        ticket.setStatus("cancelled");
         return ticketRepo.save(ticket);
     }
 
