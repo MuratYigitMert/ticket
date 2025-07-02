@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="update_tickets_with_seatNumber" author="MuratYigitMert">
+    <addColumn tableName="tickets">
+        <column name="seatNumber" type="int">
+            <constraints nullable="false"/>
+        </column>
+    </addColumn>
+    </changeSet>
+    <changeSet id="rename-columns-to-snake_case" author="MuratYigitMert">
+        <renameColumn tableName="users" oldColumnName="roleId" newColumnName="role_id" columnDataType="int"/>
+        <renameColumn tableName="tickets" oldColumnName="userId" newColumnName="user_id" columnDataType="int"/>
+        <renameColumn tableName="tickets" oldColumnName="filmId" newColumnName="film_id" columnDataType="int"/>
+        <renameColumn tableName="tickets" oldColumnName="seatNumber" newColumnName="seat_number" columnDataType="int"/>
+        <renameColumn tableName="tickets" oldColumnName="saloonNumber" newColumnName="saloon_number" columnDataType="int"/>
+        <renameColumn tableName="tickets" oldColumnName="filmDate" newColumnName="film_date" columnDataType="timestamp"/>
+        <renameColumn tableName="tickets" oldColumnName="createdAt" newColumnName="created_at" columnDataType="timestamp"/>
+
+
+    </changeSet>
+    <changeSet id="add_category_to_films" author="MuratYigitMert">
+        <addColumn tableName="films">
+            <column name="category" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="fk_to_films" author="MuratYigitMert">
+        <addForeignKeyConstraint baseTableName="films" baseColumnNames="category_id" constraintName="fk_film_to_category" referencedTableName="category"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

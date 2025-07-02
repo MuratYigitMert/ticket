@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+        <changeSet id="create_status_enum" author="MuratYigitMert">
+            <sql>
+                CREATE TYPE ticket_status AS ENUM ('pending', 'active', 'cancelled');
+            </sql>
+        </changeSet>
+
+        <changeSet id="create_init_tables" author="MuratYigitMert">
+            <createTable tableName="users">
+                <column name="id" type="serial">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="roleId" type="int">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="email" type="varchar">
+                    <constraints nullable="false" unique="true"/>
+                </column>
+                <column name="password" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="username" type="varchar">
+                    <constraints nullable="false" unique="true"/>
+                </column>
+            </createTable>
+            <createTable tableName="roles">
+                <column name="id" type="serial">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="name" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+            <createTable tableName="films">
+                <column name="id" type="serial">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="name" type="varchar(255)">
+                    <constraints nullable="false"/>
+                </column>
+
+
+            </createTable>
+            <createTable tableName="tickets">
+                <column name="id" type="serial">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="userId" type="int">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="filmId" type="int">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="saloonNumber" type="int">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="filmDate" type="timestamp">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="createdAt" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="status" type="ticket_status" defaultValueComputed="'pending'">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+
+        </changeSet>
+        <changeSet id="add_fk_to_tables" author="MuratYigitMert">
+            <addForeignKeyConstraint baseTableName="users" baseColumnNames="roleId" constraintName="fkRoleId" referencedTableName="roles"
+                                     referencedColumnNames="id"/>
+            <addForeignKeyConstraint baseTableName="tickets" baseColumnNames="userId" constraintName="fkUserId"
+                                     referencedTableName="users"
+                                     referencedColumnNames="id"/>
+            <addForeignKeyConstraint baseTableName="tickets" baseColumnNames="filmId" constraintName="fkFilmId"
+                                     referencedTableName="films"
+                                     referencedColumnNames="id"/>
+        </changeSet>
+        <changeSet id="create_category" author="MuratYigitMert">
+            <createTable tableName="category">
+                <column name="id" type="serial">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="name" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+        </changeSet>
+
+
+</databaseChangeLog>

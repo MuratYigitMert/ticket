@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0" author="admin">
+
+    </changeSet>
+    <changeSet id="inserting_user_and_admin" author="MuratYigitMert">
+        <insert tableName="roles">
+            <column name="name" value="admin"> </column>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="user"> </column>
+        </insert>
+    </changeSet>
+    <changeSet id="insert_to_category_1" author="MuratYigitMert">
+        <insert tableName="category">
+            <column name="name" value="comedy"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="action"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="romance"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="horror"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
