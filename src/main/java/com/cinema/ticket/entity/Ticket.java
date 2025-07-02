@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.time.LocalDateTime;
 
 
@@ -17,17 +16,10 @@ import java.time.LocalDateTime;
 
 
 @Table(name = "tickets")
-
 public class Ticket {
     @PrePersist
     public void onCreate() {
         createdAt = LocalDateTime.now();
-    }
-
-    public enum TicketStatus {
-        pending,
-        active,
-        cancelled,
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +30,8 @@ public class Ticket {
     private LocalDateTime filmDate;
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "ticket_status")
-    private TicketStatus status= TicketStatus.pending;
+    @Column(nullable = false, length = 20)
+    private String status = "pending";
     @Column(nullable = false)
     private int seatNumber;
     @ManyToOne

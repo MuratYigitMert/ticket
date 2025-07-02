@@ -35,8 +35,8 @@ public class FilmServiceImpl implements IFilmService {
     @Override
     public Film updateFilm(int id, Film film){
         Film film1 = filmRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Film not found with id: " + id));
-        film.setName(film1.getName());
-        film.setCategory(film1.getCategory());
+        film1.setName(film.getName());
+        film1.setCategory(film.getCategory());
         return filmRepo.save(film1);
 
     }

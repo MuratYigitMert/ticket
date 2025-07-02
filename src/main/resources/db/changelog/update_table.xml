@@ -33,5 +33,25 @@
         <addForeignKeyConstraint baseTableName="films" baseColumnNames="category_id" constraintName="fk_film_to_category" referencedTableName="category"
                                  referencedColumnNames="id"/>
     </changeSet>
+    <changeSet id="alter_status_column_cast" author="MuratYigitMert">
+        <sql>
+            ALTER TABLE tickets
+                ALTER COLUMN status SET DEFAULT CAST('pending' AS ticket_status);
+        </sql>
+        <sql>
+            ALTER TABLE tickets
+            ALTER COLUMN status TYPE ticket_status USING status::ticket_status;
+        </sql>
+
+    </changeSet>
+    <changeSet id="1751455840244-1" author="MuratYigitMert">
+        <sql>
+            ALTER TABLE tickets
+            ALTER COLUMN status TYPE varchar(20) USING status::text,
+            ALTER COLUMN status SET DEFAULT 'pending';
+
+        </sql>
+    </changeSet>
+
 
 </databaseChangeLog>
