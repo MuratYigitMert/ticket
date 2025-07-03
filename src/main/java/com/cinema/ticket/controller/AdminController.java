@@ -32,6 +32,9 @@ public class AdminController {
         Film film = new Film();
         film.setName(request.getName());
         film.setCategory(categoryService.findbyId(request.getCategoryId()));
+        film.setPosterUrl(request.getPosterUrl());
+        film.setTrailerUrl(request.getTrailerUrl());
+        film.setDescription(request.getDescription());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(DtoConverter.toDto(filmService.addFilm(film)));
     }
@@ -41,6 +44,9 @@ public class AdminController {
         Film film = new Film();
         film.setName(request.getName());
         film.setCategory(categoryService.findbyId(request.getCategoryId()));
+        film.setPosterUrl(request.getPosterUrl());
+        film.setTrailerUrl(request.getTrailerUrl());
+        film.setDescription(request.getDescription());
         return ResponseEntity.ok(DtoConverter.toDto(filmService.updateFilm(id, film)));
     }
 

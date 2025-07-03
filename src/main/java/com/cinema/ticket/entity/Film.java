@@ -18,4 +18,10 @@ public class Film {
     @ManyToOne
     @JoinColumn(name = "category_id",nullable = false)
     private Category category;
+    @Column
+    private String posterUrl;
+    @Column
+    private String trailerUrl;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 }

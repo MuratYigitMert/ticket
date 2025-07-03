@@ -7,4 +7,7 @@ public class FilmResponse {
     private int id;
     private String name;
     private int categoryId;
+    private String posterUrl;
+    private String trailerUrl;
+    private String description;
 }

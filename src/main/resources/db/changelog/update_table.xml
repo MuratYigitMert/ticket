@@ -52,6 +52,14 @@
 
         </sql>
     </changeSet>
+    <changeSet id="add_film_fields" author="MuratYigitMert">
+        <addColumn tableName="films">
+            <column name="poster_url" type="varchar(255)"/>
+            <column name="trailer_url" type="varchar(255)"/>
+            <column name="description" type="text"/>
+        </addColumn>
+    </changeSet>
+
 
 
 </databaseChangeLog>

@@ -40,6 +40,9 @@ public class DtoConverter {
         filmResponse.setId(film.getId());
         filmResponse.setName(film.getName());
         filmResponse.setCategoryId(film.getCategory().getId());
+        filmResponse.setDescription(film.getDescription());
+        filmResponse.setTrailerUrl(film.getTrailerUrl());
+        filmResponse.setDescription(film.getDescription());
         return filmResponse;
 
     }
