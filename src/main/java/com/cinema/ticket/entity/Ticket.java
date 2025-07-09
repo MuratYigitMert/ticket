@@ -34,6 +34,10 @@ public class Ticket {
     private String status = "pending";
     @Column(nullable = false)
     private int seatNumber;
+    @Column(nullable = false)
+    private int personCount;
+    @Column(nullable = false)
+    private String paymentStatus;
     @ManyToOne
     @JoinColumn(name = "user_Id", nullable = false)
     private User user;

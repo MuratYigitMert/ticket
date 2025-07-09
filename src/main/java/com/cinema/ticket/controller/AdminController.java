@@ -25,7 +25,7 @@ public class AdminController {
     private final IUserService userService;
     private final IRoleService roleService;
     private final ITicketService ticketService;
-
+    private final IMailService mailService;
     // FILM OPERATIONS
     @PostMapping("/films")
     public ResponseEntity<FilmResponse> addFilm(@RequestBody FilmRequest request) {
@@ -100,5 +100,22 @@ public class AdminController {
         Page<Ticket> tickets = ticketService.getTickets(pageable);
         Page<TicketResponse> response = tickets.map(DtoConverter::toDto);
         return ResponseEntity.ok(response);
+    }@GetMapping("/test-mail")
+    public ResponseEntity<String> testMail() {
+        mailService.sendTicketConfirmation("yigit.mert@ozu.edu.tr", "Inception", 2, "2025-07-20 19:00");
+        return ResponseEntity.ok("Email sent!");
     }
+    @PutMapping("/tickets/{id}/approve-cancellation")
+    public ResponseEntity<TicketResponse> approveCancellation(@PathVariable int id) {
+        Ticket ticket = ticketService.approveCancellation(id);
+        return ResponseEntity.ok(DtoConverter.toDto(ticket));
+    }
+    @PutMapping("/tickets/{id}/reject-cancellation")
+    public ResponseEntity<TicketResponse> rejectCancellation(@PathVariable int id) {
+        Ticket ticket = ticketService.rejectCancellation(id);
+        return ResponseEntity.ok(DtoConverter.toDto(ticket));
+    }
+
+
+
 }

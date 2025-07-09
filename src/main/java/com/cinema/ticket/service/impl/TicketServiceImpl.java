@@ -10,6 +10,7 @@ import com.cinema.ticket.repository.CategoryRepo;
 import com.cinema.ticket.repository.FilmRepo;
 import com.cinema.ticket.repository.TicketRepo;
 import com.cinema.ticket.repository.UserRepo;
+import com.cinema.ticket.service.IMailService;
 import com.cinema.ticket.service.ITicketService;
 import jakarta.transaction.Transactional;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class TicketServiceImpl implements ITicketService {
     private final CategoryRepo categoryRepo;
     private final FilmRepo filmRepo;
     private final UserRepo userRepo;
-
+    private final IMailService mailService;
     @Override
     public Page<Ticket> getTickets(Pageable pageable) {
         return ticketRepo.findAll(pageable);
@@ -46,6 +47,7 @@ public class TicketServiceImpl implements ITicketService {
     @Transactional
     @Override
     public Ticket addTicket(TicketRequest request) {
+
         User user = userRepo.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Film film = filmRepo.findById(request.getFilmId())
@@ -58,9 +60,22 @@ public class TicketServiceImpl implements ITicketService {
         ticket.setSeatNumber(request.getSeatNumber());
         ticket.setFilmDate(request.getFilmDate().toInstant()
                 .atZone(ZoneId.systemDefault()).toLocalDateTime()); // if using Date in DTO; else adjust
-        // status defaults to pending
-
-        return ticketRepo.save(ticket);
+        ticket.setPersonCount(request.getPersonCount());
+        ticket.setPaymentStatus("COMPLETED");
+        ticket.setStatus("ACTIVE");
+        Ticket savedTicket = ticketRepo.save(ticket);
+        try {
+            mailService.sendTicketConfirmation(
+                    user.getEmail(),
+                    film.getName(),
+                    request.getSeatNumber(),
+                    ticket.getFilmDate().toString()
+            );
+        }  catch (Exception e) {
+            // Log warning but don't block ticket creation
+            System.out.println("Failed to send email:"+ e.getMessage());
+        }
+        return savedTicket;
     }
 
     @Transactional
@@ -71,8 +86,56 @@ public class TicketServiceImpl implements ITicketService {
         if ("cancelled".equalsIgnoreCase(ticket.getStatus())) {
             throw new IllegalStateException("Ticket is already cancelled");
         }
-        ticket.setStatus("cancelled");
+        ticket.setStatus("cancel_requested");
+        mailService.sendCancellationRequestToAdmin(
+                ticket.getUser().getEmail(),
+                ticket.getFilm().getName(),
+                ticket.getSeatNumber(),
+                ticket.getFilmDate().toString()
+        );
         return ticketRepo.save(ticket);
     }
+    @Override
+    public Ticket approveCancellation(int id) {
+        Ticket ticket = ticketRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+
+        if (!"cancellation_requested".equalsIgnoreCase(ticket.getStatus())) {
+            throw new IllegalStateException("No cancellation was requested");
+        }
+
+        ticket.setStatus("cancelled");
+        Ticket saved = ticketRepo.save(ticket);
+
+        mailService.sendCancellationApprovedToUser(
+                ticket.getUser().getEmail(),
+                ticket.getFilm().getName()
+        );
+
+        return saved;
+    }
+    @Override
+    public Ticket rejectCancellation(int id) {
+        Ticket ticket = ticketRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+
+        if (!"cancel_requested".equalsIgnoreCase(ticket.getStatus())) {
+            throw new IllegalStateException("No cancellation was requested");
+        }
+
+        // Set status back to "active" or whatever is appropriate
+        ticket.setStatus("active");
+        Ticket saved = ticketRepo.save(ticket);
+
+        // Notify user that cancellation was rejected
+        mailService.sendCancellationRejectedToUser(
+                ticket.getUser().getEmail(),
+                ticket.getFilm().getName()
+        );
+
+        return saved;
+    }
+
+
 
 }

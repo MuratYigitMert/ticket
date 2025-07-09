@@ -11,4 +11,6 @@ public class TicketRequest {
     private int saloonNumber;
     private Date filmDate;
     private int seatNumber;
+    private int personCount;
+    private String paymentStatus;
 }

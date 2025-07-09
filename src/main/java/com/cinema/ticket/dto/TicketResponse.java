@@ -15,4 +15,6 @@ public class TicketResponse {
     private int saloonNumber;
     private LocalDateTime filmDate;
     private int seatNumber;
+    private int personCount;
+    private String paymentStatus;
 }

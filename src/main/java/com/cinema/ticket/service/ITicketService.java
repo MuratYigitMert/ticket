@@ -20,4 +20,8 @@ public interface ITicketService {
 
     @Transactional
     Ticket cancelTicket(int id);
+
+    Ticket approveCancellation(int id);
+
+    Ticket rejectCancellation(int id);
 }

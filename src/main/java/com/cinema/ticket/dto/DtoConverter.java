@@ -26,6 +26,8 @@ public class DtoConverter {
         dto.setSaloonNumber(ticket.getSaloonNumber());
         dto.setFilmDate(ticket.getFilmDate());
         dto.setSeatNumber(ticket.getSeatNumber());
+        dto.setPersonCount(ticket.getPersonCount());
+        dto.setPaymentStatus(ticket.getPaymentStatus());
         return dto;
     }
 

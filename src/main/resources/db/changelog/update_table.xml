@@ -59,6 +59,17 @@
             <column name="description" type="text"/>
         </addColumn>
     </changeSet>
+    <changeSet id="add_person_count_and_payment_status_to_tickets" author="MuratYigitMert">
+        <addColumn tableName="tickets">
+            <column name="person_count" type="int" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_status" type="varchar(20)" defaultValue="'PENDING'">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 
 
 
