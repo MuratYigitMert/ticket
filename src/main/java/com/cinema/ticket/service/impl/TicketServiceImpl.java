@@ -37,7 +37,7 @@ public class TicketServiceImpl implements ITicketService {
     @Override
     public Ticket getTicketById(int id) {
         return ticketRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
     }
     @Override
 
@@ -49,9 +49,9 @@ public class TicketServiceImpl implements ITicketService {
     public Ticket addTicket(TicketRequest request) {
 
         User user = userRepo.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Film film = filmRepo.findById(request.getFilmId())
-                .orElseThrow(() -> new RuntimeException("Film not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Film not found"));
 
         Ticket ticket = new Ticket();
         ticket.setUser(user);

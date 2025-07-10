@@ -1,11 +1,14 @@
 package com.cinema.ticket.service.impl;
 
 
+import com.cinema.ticket.dto.DtoConverter;
+import com.cinema.ticket.dto.UserRequest;
 import com.cinema.ticket.exception.ResourceNotFoundException;
 import com.cinema.ticket.entity.Role;
 import com.cinema.ticket.entity.User;
 import com.cinema.ticket.repository.RoleRepo;
 import com.cinema.ticket.repository.UserRepo;
+import com.cinema.ticket.service.IRoleService;
 import com.cinema.ticket.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,7 @@ public class UserServiceImpl implements IUserService {
 
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
+    private final IRoleService roleService;
 
     @Override
     public Page<User> getAllUsers(Pageable pageable){
@@ -42,18 +46,21 @@ public class UserServiceImpl implements IUserService {
         userRepo.deleteById(id);
     }
     @Override
-    public User modifyUser(int id, User user){
+    public User modifyUser(int id, UserRequest request){
         User user1=userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        user1.setEmail(user.getEmail());
-        user1.setPassword(user.getPassword());
-        Role role = roleRepo.findById(user.getRole().getId())
+        user1.setEmail(request.getEmail());
+        user1.setPassword(request.getPassword());
+        user1.setUsername(request.getUsername());
+        Role role = roleRepo.findById(request.getRoleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
         user1.setRole(role);
-        user1.setUsername(user.getUsername());
+
         return userRepo.save(user1);
     }
     @Override
-    public User addUser(User user){
+    public User addUser(UserRequest request) {
+        Role role = roleService.findRoleById(request.getRoleId());
+        User user = DtoConverter.toEntity(request, role);
         return userRepo.save(user);
     }
 

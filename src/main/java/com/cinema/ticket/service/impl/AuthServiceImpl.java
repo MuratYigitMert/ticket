@@ -3,6 +3,7 @@ package com.cinema.ticket.service.impl;
 import com.cinema.ticket.auth.JwtUtil;
 import com.cinema.ticket.dto.LoginRequest;
 import com.cinema.ticket.dto.LoginResponse;
+import com.cinema.ticket.dto.RegisterResponse;
 import com.cinema.ticket.dto.UserRegisterRequest;
 import com.cinema.ticket.entity.Role;
 import com.cinema.ticket.entity.User;
@@ -46,7 +47,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Transactional
     @Override
-    public User register(UserRegisterRequest request) {
+    public RegisterResponse  register(UserRegisterRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -56,6 +57,13 @@ public class AuthServiceImpl implements IAuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("Default role not found"));
         user.setRole(role);
 
-        return userRepo.save(user);
+        User savedUser = userRepo.save(user);
+
+        RegisterResponse response = new RegisterResponse();
+        response.setUsername(savedUser.getUsername());
+        response.setEmail(savedUser.getEmail());
+        response.setRoleId(savedUser.getRole().getId());
+
+        return response;
     }
 }

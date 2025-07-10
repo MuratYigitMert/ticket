@@ -1,8 +1,6 @@
 package com.cinema.ticket.controller;
 
 import com.cinema.ticket.dto.*;
-import com.cinema.ticket.entity.Film;
-import com.cinema.ticket.entity.Role;
 import com.cinema.ticket.entity.Ticket;
 import com.cinema.ticket.entity.User;
 import com.cinema.ticket.service.*;
@@ -21,33 +19,20 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final IFilmService filmService;
-    private final ICategoryService categoryService;
     private final IUserService userService;
-    private final IRoleService roleService;
     private final ITicketService ticketService;
     private final IMailService mailService;
     // FILM OPERATIONS
     @PostMapping("/films")
     public ResponseEntity<FilmResponse> addFilm(@RequestBody FilmRequest request) {
-        Film film = new Film();
-        film.setName(request.getName());
-        film.setCategory(categoryService.findbyId(request.getCategoryId()));
-        film.setPosterUrl(request.getPosterUrl());
-        film.setTrailerUrl(request.getTrailerUrl());
-        film.setDescription(request.getDescription());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(DtoConverter.toDto(filmService.addFilm(film)));
+                .body(DtoConverter.toDto(filmService.addFilm(request)));
     }
+
 
     @PutMapping("/films/{id}")
     public ResponseEntity<FilmResponse> updateFilm(@PathVariable int id, @RequestBody FilmRequest request) {
-        Film film = new Film();
-        film.setName(request.getName());
-        film.setCategory(categoryService.findbyId(request.getCategoryId()));
-        film.setPosterUrl(request.getPosterUrl());
-        film.setTrailerUrl(request.getTrailerUrl());
-        film.setDescription(request.getDescription());
-        return ResponseEntity.ok(DtoConverter.toDto(filmService.updateFilm(id, film)));
+        return ResponseEntity.ok(DtoConverter.toDto(filmService.updateFilm(id, request)));
     }
 
     @DeleteMapping("/films/{id}")
@@ -59,17 +44,14 @@ public class AdminController {
     // USER OPERATIONS
     @PostMapping("/users")
     public ResponseEntity<UserResponse> addUser(@RequestBody UserRequest request) {
-        Role role = roleService.findRoleById(request.getRoleId());
-        User user = DtoConverter.toEntity(request, role);
-        User savedUser = userService.addUser(user);
+        User savedUser = userService.addUser(request);
         return ResponseEntity.ok(DtoConverter.toDto(savedUser));
     }
 
     @PutMapping("/users/{id}")
     public ResponseEntity<UserResponse> modifyUser(@PathVariable int id, @RequestBody UserRequest request) {
-        Role role = roleService.findRoleById(request.getRoleId());
-        User user = DtoConverter.toEntity(request, role);
-        return ResponseEntity.ok(DtoConverter.toDto(userService.modifyUser(id, user)));
+        User updatedUser = userService.modifyUser(id, request); // just pass the DTO
+        return ResponseEntity.ok(DtoConverter.toDto(updatedUser));
     }
 
     @PutMapping("/users/change-role")

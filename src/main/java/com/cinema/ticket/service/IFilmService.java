@@ -1,5 +1,6 @@
 package com.cinema.ticket.service;
 
+import com.cinema.ticket.dto.FilmRequest;
 import com.cinema.ticket.entity.Film;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -13,10 +14,10 @@ public interface IFilmService {
     Page<Film> findAllFilms(Pageable pageable);
 
     @Transactional
-    Film addFilm(Film film);
+    Film addFilm(FilmRequest request);
 
     @Transactional
-    Film updateFilm(int id, Film film);
+    Film updateFilm(int id, FilmRequest request);
 
     @Transactional
     void deleteFilm(int id);

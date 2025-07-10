@@ -1,5 +1,6 @@
 package com.cinema.ticket.service;
 
+import com.cinema.ticket.dto.UserRequest;
 import com.cinema.ticket.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,11 +10,12 @@ public interface IUserService {
     Page<User> getAllUsers(Pageable pageable);
 
     User getUserbyId(int id);
+
     User changeUserRole(int id, String role);
 
     void deleteUserbyId(int id);
 
-    User modifyUser(int id, User user);
+    User modifyUser(int id, UserRequest request);
 
-    User addUser(User user);
+    User addUser(UserRequest request);
 }

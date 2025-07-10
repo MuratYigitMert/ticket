@@ -1,9 +1,12 @@
 package com.cinema.ticket.service.impl;
 
 
+import com.cinema.ticket.dto.FilmRequest;
+import com.cinema.ticket.entity.Category;
 import com.cinema.ticket.entity.Film;
 import com.cinema.ticket.exception.ResourceNotFoundException;
 import com.cinema.ticket.repository.FilmRepo;
+import com.cinema.ticket.service.ICategoryService;
 import com.cinema.ticket.service.IFilmService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmServiceImpl implements IFilmService {
     private final FilmRepo filmRepo;
+    private final ICategoryService categoryService;
     @Override
     public Film findById(int id) {
         return filmRepo.findById(id)
@@ -28,18 +32,33 @@ public class FilmServiceImpl implements IFilmService {
     }
     @Transactional
     @Override
-    public Film addFilm(Film film){
+    public Film addFilm(FilmRequest request) {
+        Category category = categoryService.findbyId(request.getCategoryId());
+
+        Film film = new Film();
+        film.setName(request.getName());
+        film.setCategory(category);
+        film.setPosterUrl(request.getPosterUrl());
+        film.setTrailerUrl(request.getTrailerUrl());
+        film.setDescription(request.getDescription());
+
         return filmRepo.save(film);
     }
     @Transactional
     @Override
-    public Film updateFilm(int id, Film film){
-        Film film1 = filmRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Film not found with id: " + id));
-        film1.setName(film.getName());
-        film1.setCategory(film.getCategory());
-        return filmRepo.save(film1);
+    public Film updateFilm(int id, FilmRequest request) {
+        Film existing = filmRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Film not found"));
 
+        existing.setName(request.getName());
+        existing.setCategory(categoryService.findbyId(request.getCategoryId()));
+        existing.setPosterUrl(request.getPosterUrl());
+        existing.setTrailerUrl(request.getTrailerUrl());
+        existing.setDescription(request.getDescription());
+
+        return filmRepo.save(existing);
     }
+
     @Transactional
     @Override
     public void deleteFilm(int id){
